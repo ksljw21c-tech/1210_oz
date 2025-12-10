@@ -670,14 +670,69 @@
     - [x] 병렬 API 호출로 성능 최적화 (Promise.allSettled)
     - [x] 에러 처리 및 재시도 로직 (일부 실패해도 계속 진행)
     - [x] 데이터 캐싱 (Server Component에서 fetch 캐싱 활용, revalidate: 3600)
-- [ ] 통계 요약 카드
-  - [ ] `components/stats/stats-summary.tsx` 생성
-    - [ ] 전체 관광지 수 표시
-    - [ ] Top 3 지역 표시 (카드 형태)
-    - [ ] Top 3 타입 표시 (카드 형태)
-    - [ ] 마지막 업데이트 시간 표시
-    - [ ] 로딩 상태 (Skeleton UI)
-    - [ ] 카드 레이아웃 디자인
+- [x] 통계 요약 카드
+  - [x] `components/stats/stats-summary.tsx` 생성
+    - [x] 전체 관광지 수 표시
+    - [x] Top 3 지역 표시 (카드 형태)
+    - [x] Top 3 타입 표시 (카드 형태)
+    - [x] 마지막 업데이트 시간 표시
+    - [x] 로딩 상태 (Skeleton UI)
+    - [x] 카드 레이아웃 디자인
+  
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+  
+  - [x] 컴포넌트 기본 구조 설정
+    - [x] Client Component 설정 ('use client')
+    - [x] Props 인터페이스 정의 (StatsSummaryProps)
+    - [x] 필요한 import 문 추가
+  
+  - [x] 유틸리티 함수 구현
+    - [x] formatNumber() - 숫자 천 단위 구분 표시
+    - [x] formatLastUpdated() - 마지막 업데이트 시간 포맷팅 (상대/절대 시간)
+    - [x] getRankVariant() - 순위 뱃지 색상 변형 선택
+  
+  - [x] 전체 관광지 수 카드 구현
+    - [x] Card 컴포넌트로 레이아웃 구성
+    - [x] BarChart3 아이콘 표시
+    - [x] 숫자 포맷팅 및 표시 (text-3xl)
+    - [x] 마지막 업데이트 시간 표시 (Clock 아이콘)
+  
+  - [x] Top 3 지역 카드 구현
+    - [x] 순위 뱃지 표시 (1위, 2위, 3위)
+    - [x] 지역명 및 관광지 개수 표시
+    - [x] MapPin 아이콘 표시
+    - [x] Link 컴포넌트로 클릭 인터랙션 (/?areaCode={areaCode})
+    - [x] 호버 효과 (hover:shadow-md, hover:scale-105)
+  
+  - [x] Top 3 타입 카드 구현
+    - [x] 순위 뱃지 표시
+    - [x] 타입명 및 관광지 개수 표시
+    - [x] TrendingUp 아이콘 표시
+    - [x] Link 컴포넌트로 클릭 인터랙션 (/?contentTypeId={contentTypeId})
+    - [x] 호버 효과
+  
+  - [x] 로딩 상태 구현
+    - [x] Skeleton UI 추가 (4개 카드)
+    - [x] 조건부 렌더링 (isLoading || !summary)
+  
+  - [x] 빈 상태 처리
+    - [x] 데이터 없을 때 메시지 표시
+    - [x] Top 3 타입이 3개 미만인 경우 빈 카드로 채우기
+  
+  - [x] 반응형 디자인 적용
+    - [x] 그리드 레이아웃 (grid-cols-1 sm:grid-cols-2 lg:grid-cols-4)
+    - [x] 카드 높이 통일 (h-full)
+  
+  - [x] 접근성 개선
+    - [x] ARIA 라벨 추가 (aria-label)
+    - [x] role="button" 설정 (클릭 가능한 카드)
+    - [x] 의미 있는 텍스트 (aria-label에 상세 정보)
+  
+  - [x] 페이지 통합
+    - [x] app/stats/page.tsx에 StatsSummary 컴포넌트 통합
+    - [x] getStatsSummary() API 호출
+    - [x] 에러 처리 (try-catch)
 - [ ] 지역별 분포 차트 (Bar Chart)
   - [ ] `components/stats/region-chart.tsx` 생성
     - [ ] shadcn/ui Chart 컴포넌트 설치 (Bar)

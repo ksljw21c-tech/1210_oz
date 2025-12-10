@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { BarChart3 } from "lucide-react";
+import { getStatsSummary } from "@/lib/api/stats-api";
+import { StatsSummary } from "@/components/stats/stats-summary";
 
 /**
  * @file page.tsx
@@ -32,6 +34,14 @@ export const metadata: Metadata = {
  * 통계 대시보드 페이지
  */
 export default async function StatsPage() {
+  // 통계 요약 데이터 수집
+  let summary = null;
+  try {
+    summary = await getStatsSummary();
+  } catch (error) {
+    console.error("통계 요약 데이터 수집 실패:", error);
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* 헤더 영역 */}
@@ -54,13 +64,7 @@ export default async function StatsPage() {
         <div className="mx-auto max-w-6xl space-y-8">
           {/* 통계 요약 카드 섹션 */}
           <section aria-label="통계 요약">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {/* TODO: stats-summary 컴포넌트 추가 예정 */}
-              <div className="rounded-lg border bg-card p-6 text-center">
-                <p className="text-sm text-muted-foreground">전체 관광지 수</p>
-                <p className="text-3xl font-bold mt-2">-</p>
-              </div>
-            </div>
+            <StatsSummary summary={summary} isLoading={false} />
           </section>
 
           {/* 지역별 분포 차트 섹션 */}
