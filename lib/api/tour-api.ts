@@ -330,16 +330,77 @@ async function parseApiResponse<T>(
   response: Response
 ): Promise<ApiResponse<T>> {
   try {
-    const data: ApiResponse<T> = await response.json();
+    // 응답 텍스트를 먼저 가져와서 확인
+    const responseText = await response.text();
+    
+    // 빈 응답 처리
+    if (!responseText || responseText.trim() === "") {
+      throw new TourApiError(
+        "API 응답이 비어있습니다. API 키를 확인해주세요.",
+        "EMPTY_RESPONSE",
+        response.status
+      );
+    }
+
+    let data: ApiResponse<T>;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      // JSON 파싱 실패 시 원본 텍스트를 로깅
+      console.error("API 응답 파싱 실패:", {
+        status: response.status,
+        statusText: response.statusText,
+        responseText: responseText.substring(0, 500), // 처음 500자만
+      });
+      
+      throw new TourApiError(
+        "API 응답 형식이 올바르지 않습니다. API 키와 서비스 상태를 확인해주세요.",
+        "INVALID_JSON",
+        response.status,
+        parseError
+      );
+    }
+
+    // 응답 구조 확인
+    if (!data || !data.response) {
+      console.error("API 응답 구조 오류:", {
+        status: response.status,
+        data: data,
+      });
+      
+      throw new TourApiError(
+        "API 응답 구조가 올바르지 않습니다.",
+        "INVALID_RESPONSE_STRUCTURE",
+        response.status
+      );
+    }
 
     // API 에러 코드 확인
-    if (data.response?.header?.resultCode !== "0000") {
-      const errorCode = data.response?.header?.resultCode || "UNKNOWN";
+    const resultCode = data.response?.header?.resultCode;
+    if (resultCode !== "0000") {
+      const errorCode = resultCode || "UNKNOWN";
       const errorMsg =
         data.response?.header?.resultMsg || "알 수 없는 오류가 발생했습니다.";
 
+      // 자주 발생하는 에러 코드에 대한 친화적인 메시지
+      let friendlyMessage = errorMsg;
+      if (errorCode === "SERVICE_KEY_IS_NOT_REGISTERED") {
+        friendlyMessage = "API 키가 등록되지 않았습니다. 환경변수를 확인해주세요.";
+      } else if (errorCode === "SERVICE_KEY_IS_NOT_VALID") {
+        friendlyMessage = "API 키가 유효하지 않습니다. API 키를 확인해주세요.";
+      } else if (errorCode === "NO_DATA") {
+        friendlyMessage = "조회된 데이터가 없습니다. 다른 조건으로 검색해보세요.";
+      }
+
+      console.error("API 에러 응답:", {
+        errorCode,
+        errorMsg,
+        status: response.status,
+        response: data.response,
+      });
+
       throw new TourApiError(
-        `API 오류: ${errorMsg}`,
+        `API 오류: ${friendlyMessage}`,
         errorCode,
         response.status
       );
@@ -351,10 +412,13 @@ async function parseApiResponse<T>(
       throw error;
     }
 
-    // JSON 파싱 에러
+    // 예상치 못한 에러
+    console.error("예상치 못한 에러:", error);
     throw new TourApiError(
-      "응답 데이터를 파싱하는 중 오류가 발생했습니다.",
-      "PARSE_ERROR",
+      error instanceof Error
+        ? `응답 처리 중 오류가 발생했습니다: ${error.message}`
+        : "응답 처리 중 알 수 없는 오류가 발생했습니다.",
+      "UNKNOWN_ERROR",
       response.status,
       error
     );
