@@ -18,8 +18,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS 템플릿",
-  description: "Next.js + Clerk + Supabase 보일러플레이트",
+  title: "My Trip - 한국 관광지 정보 서비스",
+  description:
+    "전국 관광지 정보를 한눈에! 지역별, 타입별 관광지 검색과 지도에서 위치 확인까지. 한국관광공사 공공 API 기반의 관광지 정보 서비스",
+  keywords: [
+    "관광지",
+    "여행",
+    "한국",
+    "관광정보",
+    "지도",
+    "검색",
+    "반려동물 동반",
+  ],
+  authors: [{ name: "My Trip" }],
+  openGraph: {
+    title: "My Trip - 한국 관광지 정보 서비스",
+    description:
+      "전국 관광지 정보를 한눈에! 지역별, 타입별 관광지 검색과 지도에서 위치 확인까지",
+    type: "website",
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "My Trip - 한국 관광지 정보 서비스",
+    description:
+      "전국 관광지 정보를 한눈에! 지역별, 타입별 관광지 검색과 지도에서 위치 확인까지",
+  },
 };
 
 /**
