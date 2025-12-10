@@ -329,11 +329,9 @@ async function fetchWithRetry(
 async function parseApiResponse<T>(
   response: Response
 ): Promise<ApiResponse<T>> {
-  let responseText: string = "";
-  
   try {
     // 응답 텍스트를 먼저 가져와서 확인
-    responseText = await response.text();
+    const responseText = await response.text();
     
     // 빈 응답 처리
     if (!responseText || responseText.trim() === "") {
@@ -349,10 +347,14 @@ async function parseApiResponse<T>(
       data = JSON.parse(responseText);
     } catch (parseError) {
       // JSON 파싱 실패 시 원본 텍스트를 로깅
+      const preview = responseText.length > 500 
+        ? responseText.substring(0, 500) + "..."
+        : responseText;
+      
       console.error("API 응답 파싱 실패:", {
         status: response.status,
         statusText: response.statusText,
-        responseText: responseText.substring(0, 500), // 처음 500자만
+        responseText: preview,
       });
       
       throw new TourApiError(
@@ -365,10 +367,14 @@ async function parseApiResponse<T>(
 
     // 응답 구조 확인
     if (data === null || data === undefined) {
+      const preview = responseText.length > 500 
+        ? responseText.substring(0, 500) + "..."
+        : responseText;
+      
       console.error("API 응답이 null 또는 undefined입니다:", {
         status: response.status,
         statusText: response.statusText,
-        responseText: responseText.substring(0, 500),
+        responseText: preview,
       });
       
       throw new TourApiError(
@@ -379,13 +385,21 @@ async function parseApiResponse<T>(
     }
 
     if (!data.response) {
+      const preview = responseText.length > 500 
+        ? responseText.substring(0, 500) + "..."
+        : responseText;
+      
+      const dataKeys = data && typeof data === "object" 
+        ? Object.keys(data) 
+        : [];
+      
       console.error("API 응답 구조 오류 (response 필드 없음):", {
         status: response.status,
         statusText: response.statusText,
-        dataKeys: data ? Object.keys(data) : [],
+        dataKeys,
         dataType: typeof data,
         dataValue: data,
-        responseText: responseText.substring(0, 500),
+        responseText: preview,
       });
       
       throw new TourApiError(

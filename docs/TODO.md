@@ -644,27 +644,32 @@
 
 ## Phase 4: 통계 대시보드 페이지 (`/stats`)
 
-- [ ] 페이지 기본 구조
-  - [ ] `app/stats/page.tsx` 생성
-    - [ ] 기본 레이아웃 구조
-    - [ ] 반응형 레이아웃 설정 (모바일 우선)
-    - [ ] Server Component로 구현
-- [ ] 통계 데이터 수집
-  - [ ] `lib/api/stats-api.ts` 생성
-    - [ ] `getRegionStats()` - 지역별 관광지 개수 집계
-      - [ ] `areaBasedList2` API로 각 지역별 totalCount 조회
-      - [ ] 지역 코드별로 API 호출
-    - [ ] `getTypeStats()` - 타입별 관광지 개수 집계
-      - [ ] `areaBasedList2` API로 각 타입별 totalCount 조회
-      - [ ] contentTypeId별로 API 호출
-    - [ ] `getStatsSummary()` - 전체 통계 요약
-      - [ ] 전체 관광지 수
-      - [ ] Top 3 지역
-      - [ ] Top 3 타입
-      - [ ] 마지막 업데이트 시간
-    - [ ] 병렬 API 호출로 성능 최적화
-    - [ ] 에러 처리 및 재시도 로직
-    - [ ] 데이터 캐싱 (revalidate: 3600)
+- [x] 페이지 기본 구조
+  - [x] `app/stats/page.tsx` 생성
+    - [x] 기본 레이아웃 구조
+    - [x] 반응형 레이아웃 설정 (모바일 우선)
+    - [x] Server Component로 구현
+- [x] 통계 데이터 수집
+  - [x] `lib/api/stats-api.ts` 생성
+    - [x] `getRegionStats()` - 지역별 관광지 개수 집계
+      - [x] `getAreaCode()`로 지역 코드 목록 조회
+      - [x] `areaBasedList2` API로 각 지역별 totalCount 조회
+      - [x] 지역 코드별로 병렬 API 호출 (Promise.allSettled)
+      - [x] 데이터 변환 및 정렬 (count 내림차순)
+    - [x] `getTypeStats()` - 타입별 관광지 개수 집계
+      - [x] `CONTENT_TYPE` 상수 활용
+      - [x] `areaBasedList2` API로 각 타입별 totalCount 조회
+      - [x] contentTypeId별로 병렬 API 호출 (Promise.allSettled)
+      - [x] 데이터 변환 및 정렬 (count 내림차순)
+    - [x] `getStatsSummary()` - 전체 통계 요약
+      - [x] `getRegionStats()`와 `getTypeStats()` 병렬 호출
+      - [x] 전체 관광지 수 조회 (별도 API 호출 또는 지역 합계)
+      - [x] Top 3 지역 추출
+      - [x] Top 3 타입 추출
+      - [x] 마지막 업데이트 시간 기록
+    - [x] 병렬 API 호출로 성능 최적화 (Promise.allSettled)
+    - [x] 에러 처리 및 재시도 로직 (일부 실패해도 계속 진행)
+    - [x] 데이터 캐싱 (Server Component에서 fetch 캐싱 활용, revalidate: 3600)
 - [ ] 통계 요약 카드
   - [ ] `components/stats/stats-summary.tsx` 생성
     - [ ] 전체 관광지 수 표시
