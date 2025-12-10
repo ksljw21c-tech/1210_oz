@@ -404,102 +404,243 @@
 
 ## Phase 3: 상세페이지 (`/places/[contentId]`)
 
-- [ ] 페이지 기본 구조
-  - [ ] `app/places/[contentId]/page.tsx` 생성
-    - [ ] 동적 라우팅 설정
-    - [ ] 뒤로가기 버튼 (헤더)
-    - [ ] 기본 레이아웃 구조
-    - [ ] 라우팅 테스트
-- [ ] 기본 정보 섹션 (MVP 2.4.1)
-  - [ ] `components/tour-detail/detail-info.tsx` 생성
-    - [ ] `getDetailCommon()` API 연동
-    - [ ] 관광지명 (대제목)
-    - [ ] 대표 이미지 (크게 표시)
-    - [ ] 주소 표시 및 복사 기능
-      - [ ] 클립보드 API 사용
-      - [ ] 복사 완료 토스트
-    - [ ] 전화번호 (클릭 시 전화 연결)
-    - [ ] 홈페이지 (링크)
-    - [ ] 개요 (긴 설명문)
-    - [ ] 관광 타입 및 카테고리 뱃지
-    - [ ] 정보 없는 항목 숨김 처리
-- [ ] 운영 정보 섹션 (MVP 2.4.2)
-  - [ ] `components/tour-detail/detail-intro.tsx` 생성
-    - [ ] `getDetailIntro()` API 연동
-    - [ ] 운영시간/개장시간
-    - [ ] 휴무일
-    - [ ] 이용요금
-    - [ ] 주차 가능 여부
-    - [ ] 수용인원
-    - [ ] 체험 프로그램
-    - [ ] 유모차/반려동물 동반 가능 여부
-    - [ ] 정보 없는 항목 숨김 처리
-- [ ] 이미지 갤러리 (MVP 2.4.3)
-  - [ ] `components/tour-detail/detail-gallery.tsx` 생성
-    - [ ] `getDetailImage()` API 연동
-    - [ ] 대표 이미지 + 서브 이미지들
-    - [ ] 이미지 슬라이드 기능 (Swiper 또는 캐러셀)
-    - [ ] 이미지 클릭 시 전체화면 모달
-    - [ ] 이미지 없으면 기본 이미지
-    - [ ] Next.js Image 컴포넌트 사용 (최적화)
-- [ ] 지도 섹션 (MVP 2.4.4)
-  - [ ] `components/tour-detail/detail-map.tsx` 생성
-    - [ ] 해당 관광지 위치 표시
-    - [ ] 마커 1개 표시
-    - [ ] "길찾기" 버튼
-      - [ ] 네이버 지도 앱/웹 연동
-      - [ ] URL: `https://map.naver.com/v5/directions/{좌표}`
-    - [ ] 좌표 정보 표시 (선택 사항)
-- [ ] 공유 기능 (MVP 2.4.5)
-  - [ ] `components/tour-detail/share-button.tsx` 생성
-    - [ ] URL 복사 기능
-      - [ ] `navigator.clipboard.writeText()` 사용
-      - [ ] HTTPS 환경 확인
-    - [ ] 복사 완료 토스트 메시지
-    - [ ] 공유 아이콘 버튼 (Share/Link 아이콘)
-  - [ ] Open Graph 메타태그
-    - [ ] `app/places/[contentId]/page.tsx`에 Metadata 생성
-    - [ ] `og:title` - 관광지명
-    - [ ] `og:description` - 관광지 설명 (100자 이내)
-    - [ ] `og:image` - 대표 이미지 (1200x630 권장)
-    - [ ] `og:url` - 상세페이지 URL
-    - [ ] `og:type` - "website"
-- [ ] 북마크 기능 (MVP 2.4.5)
-  - [ ] `components/bookmarks/bookmark-button.tsx` 생성
-    - [ ] 별 아이콘 (채워짐/비어있음)
-    - [ ] 북마크 상태 확인 (Supabase 조회)
-    - [ ] 북마크 추가/제거 기능
-    - [ ] 인증된 사용자 확인 (Clerk)
-    - [ ] 로그인하지 않은 경우: 로그인 유도 또는 localStorage 임시 저장
-  - [ ] Supabase 연동
-    - [ ] `lib/api/supabase-api.ts` 생성
-      - [ ] `getBookmark()` - 북마크 조회
-      - [ ] `addBookmark()` - 북마크 추가
-      - [ ] `removeBookmark()` - 북마크 제거
-      - [ ] `getUserBookmarks()` - 사용자 북마크 목록
-    - [ ] `bookmarks` 테이블 사용 (db.sql 참고)
-      - [ ] `user_id` (users 테이블 참조)
-      - [ ] `content_id` (한국관광공사 API contentid)
-      - [ ] UNIQUE 제약 (user_id, content_id)
-  - [ ] 상세페이지에 북마크 버튼 추가
-- [ ] 반려동물 정보 섹션 (MVP 2.5)
-  - [ ] `components/tour-detail/detail-pet-tour.tsx` 생성
-    - [ ] `getDetailPetTour()` API 연동
-    - [ ] 반려동물 동반 가능 여부 표시
-    - [ ] 반려동물 크기 제한 정보
-    - [ ] 반려동물 입장 가능 장소 (실내/실외)
-    - [ ] 반려동물 동반 추가 요금
-    - [ ] 반려동물 전용 시설 정보
-    - [ ] 아이콘 및 뱃지 디자인 (🐾)
-    - [ ] 주의사항 강조 표시
-- [ ] 추천 관광지 섹션 (선택 사항)
-  - [ ] 같은 지역 또는 타입의 다른 관광지 추천
-  - [ ] 카드 형태로 표시
-- [ ] 최종 통합 및 스타일링
-  - [ ] 모든 섹션 통합
-  - [ ] 반응형 디자인 확인
-  - [ ] 모바일 최적화
-  - [ ] 접근성 확인 (ARIA 라벨, 키보드 네비게이션)
+- [x] 페이지 기본 구조
+  - [x] `app/places/[contentId]/page.tsx` 생성
+    - [x] 동적 라우팅 설정 (Next.js 15 async params)
+    - [x] 뒤로가기 버튼 (헤더)
+    - [x] 기본 레이아웃 구조
+    - [x] 404 페이지 (not-found.tsx)
+- [x] 기본 정보 섹션 (MVP 2.4.1)
+  - [x] `components/tour-detail/detail-info.tsx` 생성
+    - [x] `getDetailCommon()` API 연동
+    - [x] 관광지명 (대제목)
+    - [x] 대표 이미지 (크게 표시, Next.js Image)
+    - [x] 주소 표시 및 복사 기능
+      - [x] 클립보드 API 사용
+      - [x] 복사 완료 피드백 (Check 아이콘)
+    - [x] 전화번호 (클릭 시 전화 연결)
+    - [x] 홈페이지 (링크)
+    - [x] 개요 (긴 설명문, HTML 렌더링)
+    - [x] 관광 타입 및 카테고리 뱃지
+    - [x] 정보 없는 항목 숨김 처리
+- [x] 운영 정보 섹션 (MVP 2.4.2)
+  - [x] `components/tour-detail/detail-intro.tsx` 생성
+    - [x] `getDetailIntro()` API 연동
+    - [x] 운영시간/개장시간
+    - [x] 휴무일
+    - [x] 이용요금 (타입별 필드명 처리)
+    - [x] 주차 가능 여부
+    - [x] 수용인원
+    - [x] 체험 프로그램
+    - [x] 유모차/반려동물 동반 가능 여부
+    - [x] 정보 없는 항목 숨김 처리
+- [x] 이미지 갤러리 (MVP 2.4.3)
+  - [x] `components/tour-detail/detail-gallery.tsx` 생성
+    - [x] `getDetailImage()` API 연동
+    - [x] 대표 이미지 + 서브 이미지들
+    - [x] 이미지 그리드 레이아웃 (모바일 2열, 데스크톱 3-4열)
+    - [x] 이미지 클릭 시 전체화면 모달 (Dialog)
+    - [x] 이미지 네비게이션 (이전/다음 버튼)
+    - [x] 키보드 네비게이션 (ESC, 화살표)
+    - [x] 이미지 인덱스 표시
+    - [x] Next.js Image 컴포넌트 사용 (최적화)
+- [x] 지도 섹션 (MVP 2.4.4)
+  - [x] `components/tour-detail/detail-map.tsx` 생성
+    - [x] 해당 관광지 위치 표시
+    - [x] 마커 1개 표시
+    - [x] 인포윈도우 표시
+    - [x] "길찾기" 버튼
+      - [x] 네이버 지도 앱/웹 연동
+      - [x] URL: `https://map.naver.com/v5/search/{주소}`
+    - [x] 좌표 변환 (KATEC → WGS84)
+- [x] 공유 기능 (MVP 2.4.5)
+  - [x] `components/tour-detail/share-button.tsx` 생성
+    - [x] URL 복사 기능
+      - [x] `navigator.clipboard.writeText()` 사용
+      - [x] HTTPS 환경 확인
+    - [x] 복사 완료 피드백 (Check 아이콘)
+    - [x] 공유 아이콘 버튼 (Share2 아이콘)
+  - [x] Open Graph 메타태그
+    - [x] `app/places/[contentId]/page.tsx`에 generateMetadata 함수 생성
+    - [x] `og:title` - 관광지명
+    - [x] `og:description` - 관광지 설명 (100자 이내, HTML 태그 제거)
+    - [x] `og:image` - 대표 이미지 (1200x630 권장)
+    - [x] `og:url` - 상세페이지 URL
+    - [x] `og:type` - "website"
+    - [x] `twitter:card` - "summary_large_image"
+- [x] 북마크 기능 (MVP 2.4.5)
+  - [x] `components/bookmarks/bookmark-button.tsx` 생성
+    - [x] 별 아이콘 (채워짐/비어있음)
+    - [x] 북마크 상태 확인 (API Route 조회)
+    - [x] 북마크 추가/제거 기능
+    - [x] 인증된 사용자 확인 (Clerk useUser)
+    - [x] 로그인하지 않은 경우: 로그인 페이지로 이동
+    - [x] 낙관적 업데이트 (Optimistic Update)
+  - [x] Supabase 연동
+    - [x] `app/api/bookmarks/route.ts` 생성 (API Route)
+      - [x] GET - 북마크 조회
+      - [x] POST - 북마크 추가
+      - [x] DELETE - 북마크 제거
+    - [x] `bookmarks` 테이블 사용 (db.sql 참고)
+      - [x] `user_id` (users 테이블 참조, clerk_id로 조회)
+      - [x] `content_id` (한국관광공사 API contentid)
+      - [x] UNIQUE 제약 (user_id, content_id)
+  - [x] 상세페이지에 북마크 버튼 추가
+- [x] 반려동물 정보 섹션 (MVP 2.5)
+  - [x] `components/tour-detail/detail-pet-tour.tsx` 생성
+    - [x] `getDetailPetTour()` API 연동
+    - [x] 반려동물 동반 가능 여부 표시
+    - [x] 반려동물 크기 제한 정보
+    - [x] 반려동물 입장 가능 장소 (실내/실외)
+    - [x] 반려동물 동반 추가 요금
+    - [x] 반려동물 전용 시설 정보
+    - [x] 아이콘 및 뱃지 디자인 (🐾)
+    - [x] 주의사항 강조 표시
+- [x] 추천 관광지 섹션 (선택 사항)
+  - [x] 같은 지역 또는 타입의 다른 관광지 추천
+  - [x] 카드 형태로 표시
+  - [x] "더보기" 링크 (홈페이지로 이동, 필터 적용)
+- [x] 최종 통합 및 스타일링
+  - [x] 모든 섹션 통합
+  - [x] 반응형 디자인 확인 (모바일 우선, 최대 너비 1200px)
+  - [x] 모바일 최적화
+  - [x] 접근성 확인 (ARIA 라벨, 키보드 네비게이션, sr-only)
+
+---
+
+**상세 구현 계획 (plan 모드 build)**
+
+- [x] 페이지 기본 구조 구현
+  - [x] app/places/[contentId]/page.tsx 생성
+    - [x] Next.js 15 async params 처리
+    - [x] Server Component로 구현
+    - [x] generateMetadata 함수 구현
+    - [x] 기본 레이아웃 (헤더, 메인)
+    - [x] 뒤로가기 버튼
+    - [x] 공유/북마크 버튼 배치
+  - [x] app/places/[contentId]/not-found.tsx 생성
+    - [x] 404 페이지 구현
+
+- [x] 기본 정보 섹션 구현
+  - [x] components/tour-detail/detail-info.tsx 생성
+    - [x] Client Component 설정
+    - [x] getDetailCommon() API 연동 (Server Component에서 호출)
+    - [x] 관광지명 표시 (h1, text-3xl/4xl)
+    - [x] 대표 이미지 표시 (Next.js Image, aspect-video)
+    - [x] 주소 표시 및 복사 기능
+      - [x] 클립보드 API 사용
+      - [x] 복사 완료 피드백 (Check 아이콘, 2초 표시)
+    - [x] 전화번호 표시 (tel: 링크)
+    - [x] 홈페이지 링크 (외부 링크)
+    - [x] 개요 표시 (HTML 렌더링, dangerouslySetInnerHTML)
+    - [x] 관광 타입 및 카테고리 뱃지
+    - [x] 정보 없는 항목 숨김 처리
+
+- [x] 운영 정보 섹션 구현
+  - [x] components/tour-detail/detail-intro.tsx 생성
+    - [x] Client Component 설정
+    - [x] getDetailIntro() API 연동 (Server Component에서 호출)
+    - [x] 운영시간 표시 (Clock 아이콘)
+    - [x] 휴무일 표시 (Calendar 아이콘)
+    - [x] 이용요금 표시 (DollarSign 아이콘, 타입별 필드명 처리)
+    - [x] 주차 가능 여부 표시 (Car 아이콘)
+    - [x] 수용인원 표시 (Users 아이콘)
+    - [x] 체험 프로그램 표시
+    - [x] 유모차/반려동물 동반 가능 여부 표시
+    - [x] 문의처 표시
+    - [x] 정보 없는 항목 숨김 처리
+    - [x] InfoItem 컴포넌트 구현
+
+- [x] 이미지 갤러리 구현
+  - [x] components/tour-detail/detail-gallery.tsx 생성
+    - [x] Client Component 설정
+    - [x] getDetailImage() API 연동 (Server Component에서 호출)
+    - [x] 이미지 그리드 레이아웃 (모바일 2열, 데스크톱 3-4열)
+    - [x] 대표 이미지 포함
+    - [x] 이미지 클릭 시 전체화면 모달 (Dialog)
+    - [x] 이미지 네비게이션 (이전/다음 버튼)
+    - [x] 키보드 네비게이션 (ESC, 화살표)
+    - [x] 이미지 인덱스 표시 (1 / 5 형식)
+    - [x] Next.js Image 컴포넌트 사용
+    - [x] 이미지 없으면 섹션 숨김
+
+- [x] 지도 섹션 구현
+  - [x] components/tour-detail/detail-map.tsx 생성
+    - [x] Client Component 설정
+    - [x] 네이버 지도 초기화 (Script 컴포넌트)
+    - [x] 단일 마커 표시
+    - [x] 좌표 변환 (convertKATECToWGS84)
+    - [x] 인포윈도우 표시 (관광지명, 주소)
+    - [x] 길찾기 버튼 구현
+      - [x] 네이버 지도 검색 URL 사용
+      - [x] 새 창에서 열기
+    - [x] 초기 줌 레벨 15 설정
+
+- [x] 공유 기능 구현
+  - [x] components/tour-detail/share-button.tsx 생성
+    - [x] Client Component 설정
+    - [x] URL 복사 기능 (navigator.clipboard.writeText)
+    - [x] 복사 완료 피드백 (Check 아이콘)
+    - [x] 공유 아이콘 버튼 (Share2 아이콘)
+    - [x] 에러 처리 (alert 폴백)
+
+- [x] Open Graph 메타태그 구현
+  - [x] generateMetadata 함수 구현
+    - [x] getDetailCommon() 호출
+    - [x] og:title 설정
+    - [x] og:description 설정 (overview의 처음 100자, HTML 태그 제거)
+    - [x] og:image 설정 (상대 경로 절대 경로 변환)
+    - [x] og:url 설정
+    - [x] og:type 설정
+    - [x] twitter:card 설정
+
+- [x] 북마크 기능 구현
+  - [x] app/api/bookmarks/route.ts 생성
+    - [x] GET: 북마크 조회
+      - [x] Clerk 인증 확인
+      - [x] Supabase users 테이블에서 clerk_id로 사용자 찾기
+      - [x] 북마크 조회
+    - [x] POST: 북마크 추가
+      - [x] Clerk 인증 확인
+      - [x] Supabase users 테이블에서 clerk_id로 사용자 찾기
+      - [x] 북마크 추가 (중복 처리)
+    - [x] DELETE: 북마크 제거
+      - [x] Clerk 인증 확인
+      - [x] Supabase users 테이블에서 clerk_id로 사용자 찾기
+      - [x] 북마크 제거
+  - [x] components/bookmarks/bookmark-button.tsx 생성
+    - [x] Client Component 설정
+    - [x] Clerk useUser 훅 사용
+    - [x] 북마크 상태 조회 (useEffect)
+    - [x] 북마크 토글 기능
+    - [x] 로그인하지 않은 경우 로그인 페이지로 이동
+    - [x] 낙관적 업데이트
+    - [x] 로딩 상태 처리
+
+- [x] 반려동물 정보 섹션 구현
+  - [x] components/tour-detail/detail-pet-tour.tsx 생성
+    - [x] Client Component 설정
+    - [x] getDetailPetTour() API 연동 (Server Component에서 호출)
+    - [x] 반려동물 동반 가능 여부 표시 (Heart 아이콘, 뱃지)
+    - [x] 반려동물 크기 제한 정보 표시
+    - [x] 반려동물 입장 가능 장소 표시
+    - [x] 반려동물 동반 추가 요금 표시
+    - [x] 주의사항 강조 표시 (AlertTriangle 아이콘, 경고 스타일)
+    - [x] 주차장 정보 표시
+    - [x] 정보 없으면 섹션 숨김
+
+- [x] 페이지 통합
+  - [x] app/places/[contentId]/page.tsx에 모든 컴포넌트 통합
+    - [x] 병렬 API 호출 (getDetailIntro, getDetailImage, getDetailPetTour)
+    - [x] 섹션 순서: 기본 정보 → 이미지 갤러리 → 운영 정보 → 반려동물 정보 → 지도
+    - [x] 조건부 렌더링 (데이터가 있는 경우만 표시)
+  - [x] 반응형 디자인
+    - [x] 모바일: 단일 컬럼, 패딩 조정
+    - [x] 데스크톱: 최대 너비 1200px (max-w-4xl)
+  - [x] 접근성
+    - [x] ARIA 라벨 추가 (sr-only)
+    - [x] 키보드 네비게이션 지원 (이미지 갤러리)
+    - [x] 시맨틱 HTML 사용
 
 ## Phase 4: 통계 대시보드 페이지 (`/stats`)
 

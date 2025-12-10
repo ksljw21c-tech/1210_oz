@@ -329,9 +329,11 @@ async function fetchWithRetry(
 async function parseApiResponse<T>(
   response: Response
 ): Promise<ApiResponse<T>> {
+  let responseText: string = "";
+  
   try {
     // 응답 텍스트를 먼저 가져와서 확인
-    const responseText = await response.text();
+    responseText = await response.text();
     
     // 빈 응답 처리
     if (!responseText || responseText.trim() === "") {
@@ -342,7 +344,7 @@ async function parseApiResponse<T>(
       );
     }
 
-    let data: ApiResponse<T>;
+    let data: ApiResponse<T> | any;
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
@@ -362,14 +364,32 @@ async function parseApiResponse<T>(
     }
 
     // 응답 구조 확인
-    if (!data || !data.response) {
-      console.error("API 응답 구조 오류:", {
+    if (data === null || data === undefined) {
+      console.error("API 응답이 null 또는 undefined입니다:", {
         status: response.status,
-        data: data,
+        statusText: response.statusText,
+        responseText: responseText.substring(0, 500),
       });
       
       throw new TourApiError(
-        "API 응답 구조가 올바르지 않습니다.",
+        "API 응답이 비어있습니다. API 키와 서비스 상태를 확인해주세요.",
+        "EMPTY_RESPONSE",
+        response.status
+      );
+    }
+
+    if (!data.response) {
+      console.error("API 응답 구조 오류 (response 필드 없음):", {
+        status: response.status,
+        statusText: response.statusText,
+        dataKeys: data ? Object.keys(data) : [],
+        dataType: typeof data,
+        dataValue: data,
+        responseText: responseText.substring(0, 500),
+      });
+      
+      throw new TourApiError(
+        "API 응답 구조가 올바르지 않습니다. API 서비스 상태를 확인해주세요.",
         "INVALID_RESPONSE_STRUCTURE",
         response.status
       );
