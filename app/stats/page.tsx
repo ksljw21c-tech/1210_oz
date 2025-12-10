@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { BarChart3 } from "lucide-react";
-import { getStatsSummary } from "@/lib/api/stats-api";
+import {
+  getStatsSummary,
+  getRegionStats,
+  getTypeStats,
+} from "@/lib/api/stats-api";
 import { StatsSummary } from "@/components/stats/stats-summary";
+import { RegionChart } from "@/components/stats/region-chart";
+import { TypeChart } from "@/components/stats/type-chart";
+import { ErrorMessage } from "@/components/ui/error";
 
 /**
  * @file page.tsx
@@ -36,10 +43,50 @@ export const metadata: Metadata = {
 export default async function StatsPage() {
   // 통계 요약 데이터 수집
   let summary = null;
+  let regionStats = null;
+  let typeStats = null;
+  const errors = {
+    summary: null as Error | null,
+    regionStats: null as Error | null,
+    typeStats: null as Error | null,
+  };
+
+  // 각 API 호출을 개별적으로 처리하여 일부 실패해도 나머지 데이터는 표시
   try {
-    summary = await getStatsSummary();
+    const results = await Promise.allSettled([
+      getStatsSummary(),
+      getRegionStats(),
+      getTypeStats(),
+    ]);
+
+    // 결과 처리
+    if (results[0].status === "fulfilled") {
+      summary = results[0].value;
+    } else {
+      errors.summary = results[0].reason as Error;
+      console.error("통계 요약 데이터 수집 실패:", results[0].reason);
+    }
+
+    if (results[1].status === "fulfilled") {
+      regionStats = results[1].value;
+    } else {
+      errors.regionStats = results[1].reason as Error;
+      console.error("지역별 통계 데이터 수집 실패:", results[1].reason);
+    }
+
+    if (results[2].status === "fulfilled") {
+      typeStats = results[2].value;
+    } else {
+      errors.typeStats = results[2].reason as Error;
+      console.error("타입별 통계 데이터 수집 실패:", results[2].reason);
+    }
   } catch (error) {
-    console.error("통계 요약 데이터 수집 실패:", error);
+    console.error("통계 데이터 수집 중 예상치 못한 오류:", error);
+    // 전체 실패 시 모든 에러로 표시
+    const defaultError = error instanceof Error ? error : new Error("알 수 없는 오류가 발생했습니다.");
+    errors.summary = defaultError;
+    errors.regionStats = defaultError;
+    errors.typeStats = defaultError;
   }
 
   return (
@@ -64,29 +111,54 @@ export default async function StatsPage() {
         <div className="mx-auto max-w-6xl space-y-8">
           {/* 통계 요약 카드 섹션 */}
           <section aria-label="통계 요약">
-            <StatsSummary summary={summary} isLoading={false} />
+            {errors.summary ? (
+              <ErrorMessage
+                message="통계 요약 데이터를 불러오는 중 오류가 발생했습니다."
+                onRetry={() => {
+                  if (typeof window !== "undefined") {
+                    window.location.reload();
+                  }
+                }}
+              />
+            ) : (
+              <StatsSummary summary={summary} isLoading={false} />
+            )}
           </section>
 
           {/* 지역별 분포 차트 섹션 */}
           <section aria-label="지역별 관광지 분포">
-            <div className="rounded-lg border bg-card p-6">
-              <h2 className="text-2xl font-bold mb-4">지역별 관광지 분포</h2>
-              {/* TODO: region-chart 컴포넌트 추가 예정 */}
-              <div className="h-96 flex items-center justify-center text-muted-foreground">
-                <p>차트가 여기에 표시됩니다</p>
-              </div>
-            </div>
+            {errors.regionStats ? (
+              <ErrorMessage
+                message="지역별 통계 데이터를 불러오는 중 오류가 발생했습니다."
+                onRetry={() => {
+                  if (typeof window !== "undefined") {
+                    window.location.reload();
+                  }
+                }}
+              />
+            ) : (
+              <RegionChart
+                regionStats={regionStats}
+                isLoading={false}
+                limit={10}
+              />
+            )}
           </section>
 
           {/* 타입별 분포 차트 섹션 */}
           <section aria-label="타입별 관광지 분포">
-            <div className="rounded-lg border bg-card p-6">
-              <h2 className="text-2xl font-bold mb-4">타입별 관광지 분포</h2>
-              {/* TODO: type-chart 컴포넌트 추가 예정 */}
-              <div className="h-96 flex items-center justify-center text-muted-foreground">
-                <p>차트가 여기에 표시됩니다</p>
-              </div>
-            </div>
+            {errors.typeStats ? (
+              <ErrorMessage
+                message="타입별 통계 데이터를 불러오는 중 오류가 발생했습니다."
+                onRetry={() => {
+                  if (typeof window !== "undefined") {
+                    window.location.reload();
+                  }
+                }}
+              />
+            ) : (
+              <TypeChart typeStats={typeStats} isLoading={false} />
+            )}
           </section>
         </div>
       </main>

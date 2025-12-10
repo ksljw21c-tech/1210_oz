@@ -1,8 +1,12 @@
+"use client";
+
 import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { MapPin, BarChart3, Bookmark } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * @file Navbar.tsx
@@ -19,6 +23,26 @@ import { MapPin, BarChart3, Bookmark } from "lucide-react";
  * - next/link: 클라이언트 사이드 라우팅
  */
 const Navbar = () => {
+  const pathname = usePathname();
+
+  const navLinks = [
+    {
+      href: "/",
+      label: "홈",
+      icon: MapPin,
+    },
+    {
+      href: "/stats",
+      label: "통계",
+      icon: BarChart3,
+    },
+    {
+      href: "/bookmarks",
+      label: "북마크",
+      icon: Bookmark,
+    },
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex justify-between items-center p-4 gap-4 h-16 max-w-7xl mx-auto">
@@ -29,24 +53,21 @@ const Navbar = () => {
 
         {/* 네비게이션 링크 */}
         <nav className="flex gap-2 items-center">
-          <Link href="/">
-            <Button variant="ghost" className="gap-2">
-              <MapPin className="w-4 h-4" />
-              <span className="hidden sm:inline">홈</span>
-            </Button>
-          </Link>
-          <Link href="/stats">
-            <Button variant="ghost" className="gap-2">
-              <BarChart3 className="w-4 h-4" />
-              <span className="hidden sm:inline">통계</span>
-            </Button>
-          </Link>
-          <Link href="/bookmarks">
-            <Button variant="ghost" className="gap-2">
-              <Bookmark className="w-4 h-4" />
-              <span className="hidden sm:inline">북마크</span>
-            </Button>
-          </Link>
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = pathname === link.href;
+            return (
+              <Link key={link.href} href={link.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn("gap-2", isActive && "bg-secondary")}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="hidden sm:inline">{link.label}</span>
+                </Button>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* 로그인/사용자 버튼 */}

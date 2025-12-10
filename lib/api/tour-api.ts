@@ -134,12 +134,6 @@ interface SearchKeywordParams {
 interface GetDetailCommonParams {
   contentId: string;
   contentTypeId?: string;
-  defaultYN?: "Y" | "N";
-  firstImageYN?: "Y" | "N";
-  areacodeYN?: "Y" | "N";
-  catcodeYN?: "Y" | "N";
-  addrinfoYN?: "Y" | "N";
-  mapinfoYN?: "Y" | "N";
   overviewYN?: "Y" | "N";
 }
 
@@ -384,26 +378,87 @@ async function parseApiResponse<T>(
       );
     }
 
-    if (!data.response) {
+    // data가 객체인지 확인
+    if (typeof data !== "object" || data === null) {
       const preview = responseText.length > 500 
         ? responseText.substring(0, 500) + "..."
         : responseText;
       
-      const dataKeys = data && typeof data === "object" 
-        ? Object.keys(data) 
-        : [];
+      console.error("API 응답이 객체가 아닙니다:", {
+        status: response.status,
+        statusText: response.statusText,
+        dataType: typeof data,
+        dataValue: String(data),
+        responseText: preview,
+      });
+      
+      throw new TourApiError(
+        "API 응답 형식이 올바르지 않습니다. API 키와 서비스 상태를 확인해주세요.",
+        "INVALID_RESPONSE_STRUCTURE",
+        response.status
+      );
+    }
+
+    // response 필드 확인
+    if (!data.response) {
+      // 에러 응답 형식 확인 (resultCode, resultMsg가 있는 경우)
+      if (
+        typeof data === "object" &&
+        data !== null &&
+        ("resultCode" in data || "resultMsg" in data)
+      ) {
+        const errorCode = (data as any).resultCode || "UNKNOWN";
+        const errorMsg =
+          (data as any).resultMsg || "알 수 없는 오류가 발생했습니다.";
+
+        // 자주 발생하는 에러 코드에 대한 친화적인 메시지
+        let friendlyMessage = errorMsg;
+        if (errorCode === "SERVICE_KEY_IS_NOT_REGISTERED") {
+          friendlyMessage = "API 키가 등록되지 않았습니다. 환경변수를 확인해주세요.";
+        } else if (errorCode === "SERVICE_KEY_IS_NOT_VALID") {
+          friendlyMessage = "API 키가 유효하지 않습니다. API 키를 확인해주세요.";
+        } else if (errorCode === "NO_DATA") {
+          friendlyMessage = "조회된 데이터가 없습니다. 다른 조건으로 검색해보세요.";
+        }
+
+        console.error("API 에러 응답 (직접 형식):", {
+          status: response.status,
+          statusText: response.statusText,
+          errorCode,
+          errorMsg,
+          responseTime: (data as any).responseTime,
+        });
+
+        throw new TourApiError(friendlyMessage, String(errorCode), response.status);
+      }
+
+      // response 필드가 없고 에러 형식도 아닌 경우
+      const preview = responseText.length > 500 
+        ? responseText.substring(0, 500) + "..."
+        : responseText;
+      
+      // data의 키 목록 안전하게 추출
+      const dataKeys = Object.keys(data);
+      
+      // dataValue를 안전하게 직렬화 (순환 참조 방지)
+      let dataValuePreview: string;
+      try {
+        dataValuePreview = JSON.stringify(data, null, 2).substring(0, 500);
+      } catch {
+        dataValuePreview = "[직렬화 불가능한 객체]";
+      }
       
       console.error("API 응답 구조 오류 (response 필드 없음):", {
         status: response.status,
         statusText: response.statusText,
         dataKeys,
         dataType: typeof data,
-        dataValue: data,
+        dataValuePreview,
         responseText: preview,
       });
       
       throw new TourApiError(
-        "API 응답 구조가 올바르지 않습니다. API 서비스 상태를 확인해주세요.",
+        `API 응답 구조가 올바르지 않습니다. (필드: ${dataKeys.join(", ") || "없음"}) API 서비스 상태를 확인해주세요.`,
         "INVALID_RESPONSE_STRUCTURE",
         response.status
       );
@@ -628,12 +683,6 @@ export async function getDetailCommon(
   const queryParams = buildQueryParams({
     contentId: params.contentId,
     contentTypeId: params.contentTypeId,
-    defaultYN: params.defaultYN || "Y",
-    firstImageYN: params.firstImageYN || "Y",
-    areacodeYN: params.areacodeYN,
-    catcodeYN: params.catcodeYN,
-    addrinfoYN: params.addrinfoYN,
-    mapinfoYN: params.mapinfoYN,
     overviewYN: params.overviewYN || "Y",
   });
 

@@ -733,39 +733,185 @@
     - [x] app/stats/page.tsx에 StatsSummary 컴포넌트 통합
     - [x] getStatsSummary() API 호출
     - [x] 에러 처리 (try-catch)
-- [ ] 지역별 분포 차트 (Bar Chart)
-  - [ ] `components/stats/region-chart.tsx` 생성
-    - [ ] shadcn/ui Chart 컴포넌트 설치 (Bar)
-    - [ ] recharts 기반 Bar Chart 구현
-    - [ ] X축: 지역명 (서울, 부산, 제주 등)
-    - [ ] Y축: 관광지 개수
-    - [ ] 상위 10개 지역 표시 (또는 전체)
-    - [ ] 바 클릭 시 해당 지역 목록 페이지로 이동
-    - [ ] 호버 시 정확한 개수 표시
-    - [ ] 다크/라이트 모드 지원
-    - [ ] 반응형 디자인
-    - [ ] 로딩 상태
-    - [ ] 접근성 (ARIA 라벨, 키보드 네비게이션)
-- [ ] 타입별 분포 차트 (Donut Chart)
-  - [ ] `components/stats/type-chart.tsx` 생성
-    - [ ] shadcn/ui Chart 컴포넌트 설치 (Pie/Donut)
-    - [ ] recharts 기반 Donut Chart 구현
-    - [ ] 타입별 비율 (백분율)
-    - [ ] 타입별 개수 표시
-    - [ ] 섹션 클릭 시 해당 타입 목록 페이지로 이동
-    - [ ] 호버 시 타입명, 개수, 비율 표시
-    - [ ] 다크/라이트 모드 지원
-    - [ ] 반응형 디자인
-    - [ ] 로딩 상태
-    - [ ] 접근성 (ARIA 라벨)
-- [ ] 페이지 통합
-  - [ ] `app/stats/page.tsx`에 모든 컴포넌트 통합
-    - [ ] 통계 요약 카드 (상단)
-    - [ ] 지역별 분포 차트 (중단)
-    - [ ] 타입별 분포 차트 (하단)
-  - [ ] 에러 처리 (에러 메시지 + 재시도 버튼)
-  - [ ] 네비게이션에 통계 페이지 링크 추가
-  - [ ] 최종 페이지 확인
+- [x] 지역별 분포 차트 (Bar Chart)
+  - [x] `components/stats/region-chart.tsx` 생성
+    - [x] shadcn/ui Chart 컴포넌트 설치 (Bar)
+    - [x] recharts 기반 Bar Chart 구현
+    - [x] X축: 지역명 (서울, 부산, 제주 등)
+    - [x] Y축: 관광지 개수
+    - [x] 상위 10개 지역 표시 (또는 전체)
+    - [x] 바 클릭 시 해당 지역 목록 페이지로 이동
+    - [x] 호버 시 정확한 개수 표시
+    - [x] 다크/라이트 모드 지원
+    - [x] 반응형 디자인
+    - [x] 로딩 상태
+    - [x] 접근성 (ARIA 라벨, 키보드 네비게이션)
+  
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+  
+  - [x] 필수 패키지 설치
+    - [x] recharts 패키지 설치 (`pnpm add recharts`)
+    - [x] shadcn/ui Chart 컴포넌트 설치 (`pnpx shadcn@latest add chart`)
+  
+  - [x] 컴포넌트 기본 구조 설정
+    - [x] Client Component 설정 ('use client')
+    - [x] Props 인터페이스 정의 (RegionChartProps)
+    - [x] 필요한 import 문 추가 (recharts, Chart 컴포넌트)
+  
+  - [x] 차트 데이터 준비
+    - [x] RegionStats[] → recharts 형식 변환 (useMemo)
+    - [x] limit 파라미터로 상위 N개 제한 (기본값: 10)
+    - [x] ChartData 인터페이스 정의
+  
+  - [x] Bar Chart 구현
+    - [x] ChartContainer로 감싸기
+    - [x] ResponsiveContainer로 반응형 처리
+    - [x] BarChart, Bar, XAxis, YAxis 구성
+    - [x] CartesianGrid 추가 (격자선)
+    - [x] ChartTooltip 커스터마이징
+  
+  - [x] X축 설정
+    - [x] dataKey="name" (지역명)
+    - [x] angle={-45} (텍스트 회전)
+    - [x] textAnchor="end"
+    - [x] height={80} (텍스트 공간 확보)
+    - [x] tick 스타일링 (muted-foreground)
+  
+  - [x] Y축 설정
+    - [x] tickFormatter로 천 단위 구분 표시
+    - [x] tick 스타일링 (muted-foreground)
+  
+  - [x] Bar 설정
+    - [x] dataKey="count"
+    - [x] fill 색상 (chart-1)
+    - [x] radius={[4, 4, 0, 0]} (둥근 모서리)
+    - [x] onClick 핸들러 (바 클릭 시 해당 지역 필터 적용)
+    - [x] cursor: pointer 스타일
+  
+  - [x] Tooltip 구현
+    - [x] ChartTooltipContent 커스터마이징
+    - [x] 지역명 및 정확한 개수 표시
+    - [x] 천 단위 구분 포맷팅
+  
+  - [x] 인터랙션 구현
+    - [x] 바 클릭 핸들러 (useRouter로 페이지 이동)
+    - [x] URL 쿼리 파라미터 추가 (/?areaCode={areaCode})
+  
+  - [x] 로딩 상태 구현
+    - [x] Skeleton UI 추가 (h-[400px])
+    - [x] 조건부 렌더링 (isLoading || !regionStats)
+  
+  - [x] 빈 상태 처리
+    - [x] 데이터 없을 때 메시지 표시
+  
+  - [x] 반응형 디자인 적용
+    - [x] ResponsiveContainer로 자동 반응형 처리
+    - [x] 차트 높이 400px 고정
+    - [x] X축 텍스트 회전 (모바일 대응)
+  
+  - [x] 접근성 개선
+    - [x] aria-label 추가 (BarChart, 각 바)
+    - [x] 의미 있는 텍스트
+  
+  - [x] 페이지 통합
+    - [x] app/stats/page.tsx에 RegionChart 컴포넌트 통합
+    - [x] getRegionStats() API 호출 추가
+    - [x] Promise.all로 병렬 데이터 수집
+    - [x] 에러 처리 (try-catch)
+- [x] 타입별 분포 차트 (Donut Chart)
+  - [x] `components/stats/type-chart.tsx` 생성
+    - [x] shadcn/ui Chart 컴포넌트 설치 (Pie/Donut)
+    - [x] recharts 기반 Donut Chart 구현
+    - [x] 타입별 비율 (백분율)
+    - [x] 타입별 개수 표시
+    - [x] 섹션 클릭 시 해당 타입 목록 페이지로 이동
+    - [x] 호버 시 타입명, 개수, 비율 표시
+    - [x] 다크/라이트 모드 지원
+    - [x] 반응형 디자인
+    - [x] 로딩 상태
+    - [x] 접근성 (ARIA 라벨)
+  
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+  
+  - [x] 컴포넌트 기본 구조 설정
+    - [x] Client Component 설정 ('use client')
+    - [x] Props 인터페이스 정의 (TypeChartProps)
+    - [x] 필요한 import 문 추가 (recharts, Chart 컴포넌트)
+  
+  - [x] 차트 데이터 준비
+    - [x] TypeStats[] → recharts Pie 형식 변환 (useMemo)
+    - [x] 비율 계산 로직 (전체 합계 대비 백분율)
+    - [x] 색상 팔레트 정의 (8개 타입, chart-1 ~ chart-8)
+    - [x] ChartData 인터페이스 정의
+  
+  - [x] Donut Chart 구현
+    - [x] ChartContainer로 감싸기
+    - [x] ResponsiveContainer로 반응형 처리
+    - [x] PieChart, Pie 구성
+    - [x] innerRadius 설정으로 Donut 효과 (outerRadius: 120, innerRadius: 80)
+    - [x] Cell로 각 섹션 색상 지정
+    - [x] paddingAngle로 섹션 간 간격 설정 (2도)
+  
+  - [x] 인터랙션 구현
+    - [x] 섹션 클릭 핸들러 (useRouter로 페이지 이동)
+    - [x] URL 쿼리 파라미터 추가 (/?contentTypeId={contentTypeId})
+    - [x] Tooltip 커스터마이징 (타입명, 개수, 비율 표시)
+    - [x] Legend 구현 (타입명과 비율 표시)
+  
+  - [x] 로딩 상태 구현
+    - [x] Skeleton UI 추가 (h-[400px], rounded-full)
+    - [x] 조건부 렌더링 (isLoading || !typeStats)
+  
+  - [x] 빈 상태 처리
+    - [x] 데이터 없을 때 메시지 표시
+  
+  - [x] 반응형 디자인 적용
+    - [x] ResponsiveContainer로 자동 반응형 처리
+    - [x] 차트 높이 400px 고정
+  
+  - [x] 접근성 개선
+    - [x] aria-label 추가 (PieChart, 각 Cell)
+    - [x] 의미 있는 텍스트 (타입명, 개수, 비율)
+  
+  - [x] 페이지 통합
+    - [x] app/stats/page.tsx에 TypeChart 컴포넌트 통합
+    - [x] getTypeStats() API 호출 추가
+    - [x] Promise.all로 병렬 데이터 수집
+    - [x] 에러 처리 (try-catch)
+- [x] 페이지 통합
+  - [x] `app/stats/page.tsx`에 모든 컴포넌트 통합
+    - [x] 통계 요약 카드 (상단)
+    - [x] 지역별 분포 차트 (중단)
+    - [x] 타입별 분포 차트 (하단)
+  - [x] 에러 처리 (에러 메시지 + 재시도 버튼)
+  - [x] 네비게이션에 통계 페이지 링크 추가
+  - [x] 최종 페이지 확인
+  
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+  
+  - [x] 에러 처리 구현
+    - [x] Promise.allSettled로 각 API 호출별 에러 상태 분리
+    - [x] errors 객체로 각 섹션별 에러 상태 관리
+    - [x] ErrorMessage 컴포넌트 통합 (각 섹션별)
+    - [x] 재시도 기능 구현 (페이지 새로고침)
+    - [x] 일부 실패해도 나머지 데이터는 표시
+  
+  - [x] 네비게이션 링크 개선
+    - [x] usePathname 훅으로 현재 경로 확인
+    - [x] 활성 상태 표시 (variant="secondary", bg-secondary)
+    - [x] navLinks 배열로 링크 관리
+    - [x] Client Component로 전환 ('use client')
+    - [x] cn 유틸리티로 조건부 스타일 적용
+  
+  - [x] 최종 페이지 확인
+    - [x] 레이아웃 및 섹션 순서 확인
+    - [x] 에러 처리 동작 확인
+    - [x] 네비게이션 활성 상태 확인
+    - [x] 반응형 디자인 확인
+    - [x] 접근성 확인 (ARIA 라벨)
 
 ## Phase 5: 북마크 페이지 (`/bookmarks`) - 선택 사항
 
