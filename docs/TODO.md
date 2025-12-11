@@ -948,15 +948,68 @@
     - [x] GET /api/verify-supabase 요청 테스트
     - [x] 응답 형식 및 내용 확인
     - [x] 에러 케이스 테스트 (환경변수 누락 등)
-- [ ] 북마크 목록 페이지
-  - [ ] `app/bookmarks/page.tsx` 생성
-    - [ ] 인증된 사용자만 접근 가능
-    - [ ] 로그인하지 않은 경우 로그인 유도
-  - [ ] `components/bookmarks/bookmark-list.tsx` 생성
-    - [ ] 사용자 북마크 목록 조회 (`getUserBookmarks()`)
-    - [ ] 카드 레이아웃 (홈페이지와 동일한 tour-card 사용)
-    - [ ] 빈 상태 처리 (북마크 없을 때)
-    - [ ] 로딩 상태 (Skeleton UI)
+- [x] 북마크 목록 페이지
+  - [x] `app/bookmarks/page.tsx` 생성
+    - [x] 인증된 사용자만 접근 가능
+    - [x] 로그인하지 않은 경우 로그인 유도
+  - [x] `components/bookmarks/bookmark-list.tsx` 생성
+    - [x] 사용자 북마크 목록 조회 (`getUserBookmarks()`)
+    - [x] 카드 레이아웃 (홈페이지와 동일한 tour-card 사용)
+    - [x] 빈 상태 처리 (북마크 없을 때)
+    - [x] 로딩 상태 (Skeleton UI)
+
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+
+  - [x] 북마크 목록 페이지 생성
+    - [x] `app/bookmarks/page.tsx` Server Component 생성
+    - [x] Clerk 인증 확인 (`auth()` 사용)
+    - [x] 로그인하지 않은 경우 `/sign-in`으로 리다이렉트
+    - [x] Supabase `users` 테이블에서 Clerk user ID로 사용자 찾기
+    - [x] 북마크 목록 조회 (`getUserBookmarks()`)
+    - [x] 각 content_id에 대해 `getDetailCommon()` 병렬 호출 (Promise.allSettled)
+    - [x] TourDetail → TourItem 변환
+    - [x] 메타데이터 설정 (SEO)
+    - [x] 페이지 헤더 (제목, 북마크 개수 표시)
+
+  - [x] 북마크 목록 컴포넌트 생성
+    - [x] `components/bookmarks/bookmark-list.tsx` Client Component 생성
+    - [x] TourCard 컴포넌트 재사용 (그리드 레이아웃)
+    - [x] Props 인터페이스 정의 (tours, isLoading, error, onRetry)
+    - [x] 로딩 상태: SkeletonCard 6개 표시
+    - [x] 빈 상태: 북마크 없을 때 안내 메시지와 관광지 둘러보기 버튼
+    - [x] 에러 상태: ErrorMessage 컴포넌트 사용
+    - [x] 북마크 개수 표시
+    - [x] 반응형 그리드 (모바일 1열, 태블릿 2열, 데스크톱 3열)
+    - [x] 접근성 (ARIA 라벨, 의미 있는 텍스트)
+
+  - [x] 데이터 처리 로직 구현
+    - [x] 북마크 content_id 목록 조회
+    - [x] 한국관광공사 API로 관광지 상세 정보 병렬 조회
+    - [x] 실패한 조회는 필터링 (일부 실패해도 성공 항목 표시)
+    - [x] 에러 처리 및 로깅
+    - [x] 데이터 변환 (Bookmark[] → TourItem[])
+
+  - [x] UI/UX 구현
+    - [x] Bookmark 아이콘 사용
+    - [x] 북마크 개수 실시간 표시
+    - [x] 빈 상태 디자인 (아이콘, 메시지, 버튼)
+    - [x] 에러 복구 (재시도 버튼)
+    - [x] 반응형 디자인
+    - [x] 접근성 고려
+
+  - [x] 성능 최적화
+    - [x] Server Component로 초기 데이터 페칭
+    - [x] Promise.allSettled로 병렬 API 호출
+    - [x] Next.js Image 컴포넌트 사용 (TourCard에서)
+    - [x] 불필요한 재렌더링 방지
+
+  - [x] 테스트 및 검증
+    - [x] 인증되지 않은 사용자 접근 시 리다이렉트 확인
+    - [x] 북마크 없는 사용자 빈 상태 확인
+    - [x] 북마크 있는 사용자 목록 표시 확인
+    - [x] API 에러 시 에러 메시지 표시 확인
+    - [x] 반응형 디자인 확인
 - [ ] 북마크 관리 기능
   - [ ] 정렬 옵션
     - [ ] 최신순 (created_at DESC)
