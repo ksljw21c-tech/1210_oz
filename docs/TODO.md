@@ -1087,14 +1087,52 @@
 
 ## Phase 6: 최적화 & 배포
 
-- [ ] 이미지 최적화
-  - [ ] `next.config.ts` 외부 도메인 설정
-    - [ ] 한국관광공사 이미지 도메인 추가
-    - [ ] 네이버 지도 이미지 도메인 추가
-  - [ ] Next.js Image 컴포넌트 사용 확인
-    - [ ] priority 속성 (above-the-fold)
-    - [ ] lazy loading (below-the-fold)
-    - [ ] responsive sizes 설정
+- [x] 이미지 최적화
+  - [x] `next.config.ts` 외부 도메인 설정
+    - [x] 한국관광공사 이미지 도메인 추가
+    - [x] 네이버 지도 이미지 도메인 추가
+  - [x] Next.js Image 컴포넌트 사용 확인
+    - [x] priority 속성 (above-the-fold)
+    - [x] lazy loading (below-the-fold)
+    - [x] responsive sizes 설정
+
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+
+  - [x] next.config.ts 외부 도메인 설정
+    - [x] 한국관광공사 이미지 도메인 추가 (`api.visitkorea.or.kr`, `tong.visitkorea.or.kr`, `phoko.visitkorea.or.kr`, `korean.visitkorea.or.kr`, `www.visitkorea.or.kr`)
+    - [x] 네이버 지도 이미지 도메인 추가 (`map.pstatic.net`, `ssl.pstatic.net`, `naver.net`)
+    - [x] remotePatterns 설정으로 외부 이미지 도메인 허용
+
+  - [x] priority 속성 최적화 (above-the-fold)
+    - [x] TourCard 컴포넌트에 priority prop 추가
+    - [x] 홈페이지 상위 6개 TourCard에 priority={true} 적용
+    - [x] 북마크 페이지 상위 6개 TourCard에 priority={true} 적용
+    - [x] 상세페이지 대표 이미지에 이미 priority 적용됨 (detail-info.tsx)
+    - [x] 모달 이미지에 priority 적용 (detail-gallery.tsx)
+
+  - [x] lazy loading 설정 (below-the-fold)
+    - [x] Next.js Image 기본 lazy loading 동작 확인
+    - [x] priority={false}인 이미지들은 자동으로 lazy loading 적용
+    - [x] viewport 밖 이미지는 스크롤 시 로딩
+
+  - [x] responsive sizes 설정 검증
+    - [x] tour-card.tsx: `(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw` ✅
+    - [x] detail-info.tsx: `(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px` ✅
+    - [x] detail-gallery.tsx: `(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw` ✅
+    - [x] 각 컴포넌트의 실제 레이아웃과 sizes 값 일치 확인
+
+  - [x] 빌드 및 성능 검증
+    - [x] Next.js 빌드 성공 확인
+    - [x] 이미지 최적화 경고 없음
+    - [x] 외부 도메인 검증 에러 없음
+    - [x] First Load JS 크기 확인 (166 kB ~ 229 kB)
+
+  - [x] 추가 최적화 고려사항
+    - [x] WebP 자동 변환 지원
+    - [x] 이미지 품질 자동 조정 (75% 기본값)
+    - [x] blurDataURL placeholder 고려 (향후 구현 가능)
+    - [x] 이미지 로드 에러 처리 (fallback 이미지)
 - [ ] 전역 에러 핸들링
   - [ ] `app/error.tsx` 생성
   - [ ] `app/global-error.tsx` 생성

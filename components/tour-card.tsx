@@ -35,6 +35,8 @@ interface TourCardProps {
   tour: TourItem;
   /** 호버 시 콜백 (지도 연동용, 선택) */
   onHover?: (tour: TourItem) => void;
+  /** 이미지 우선 로딩 (above-the-fold) */
+  priority?: boolean;
   /** 추가 클래스명 */
   className?: string;
 }
@@ -47,7 +49,7 @@ const DEFAULT_IMAGE = "/logo.png";
 /**
  * 관광지 카드 컴포넌트
  */
-export function TourCard({ tour, onHover, className }: TourCardProps) {
+export function TourCard({ tour, onHover, priority = false, className }: TourCardProps) {
   // 이미지 URL 결정 (firstimage 우선, 없으면 firstimage2, 둘 다 없으면 기본 이미지)
   const imageUrl = tour.firstimage || tour.firstimage2 || DEFAULT_IMAGE;
 
@@ -71,7 +73,7 @@ export function TourCard({ tour, onHover, className }: TourCardProps) {
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority={false}
+            priority={priority}
           />
         </div>
 

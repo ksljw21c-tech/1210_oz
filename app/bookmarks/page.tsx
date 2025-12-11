@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { Bookmark } from "lucide-react";
+import { Bookmark as BookmarkIcon } from "lucide-react";
 import { getUserBookmarks } from "@/lib/api/supabase-api";
 import { getDetailCommon } from "@/lib/api/tour-api";
 import { createClient } from "@/lib/supabase/server";
@@ -85,6 +85,7 @@ export default async function BookmarksPage() {
             cat1: tourDetail.cat1,
             cat2: tourDetail.cat2,
             cat3: tourDetail.cat3,
+            modifiedtime: "", // TourDetail에는 modifiedtime이 없으므로 빈 문자열
           };
 
           return tourItem;
@@ -115,7 +116,7 @@ export default async function BookmarksPage() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3">
-            <Bookmark className="h-8 w-8 text-primary" />
+            <BookmarkIcon className="h-8 w-8 text-primary" />
             <div>
               <h1 className="text-3xl font-bold">내 북마크</h1>
               <p className="text-sm text-muted-foreground mt-1">

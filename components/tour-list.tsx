@@ -106,11 +106,12 @@ export function TourList({
         className
       )}
     >
-      {tours.map((tour) => (
+      {tours.map((tour, index) => (
         <TourCard
           key={tour.contentid}
           tour={tour}
           onHover={onTourHover}
+          priority={index < 6} // 첫 화면에 보이는 상위 6개 이미지 우선 로딩
         />
       ))}
     </div>

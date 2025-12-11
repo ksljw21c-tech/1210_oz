@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SkeletonCard } from "@/components/ui/skeleton";
 import { ErrorMessage } from "@/components/ui/error";
-import { Bookmark, MapPin, ArrowUpDown, Trash2 } from "lucide-react";
+import { Bookmark as BookmarkIcon, MapPin, ArrowUpDown, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import {
@@ -262,7 +262,7 @@ export function BookmarkList({
         <CardContent className="p-8">
           <div className="flex flex-col items-center justify-center text-center space-y-4">
             <div className="rounded-full bg-muted p-6">
-              <Bookmark className="h-12 w-12 text-muted-foreground" />
+              <BookmarkIcon className="h-12 w-12 text-muted-foreground" />
             </div>
 
             <div className="space-y-2">
@@ -300,12 +300,11 @@ export function BookmarkList({
           {/* 전체 선택 체크박스 */}
           {sortedTours.length > 0 && (
             <div className="flex items-center gap-2">
-              <Checkbox
-                id="select-all"
-                checked={selectedItems.length === sortedTours.length && sortedTours.length > 0}
-                indeterminate={selectedItems.length > 0 && selectedItems.length < sortedTours.length}
-                onCheckedChange={handleSelectAll}
-              />
+                <Checkbox
+                  id="select-all"
+                  checked={selectedItems.length === sortedTours.length && sortedTours.length > 0}
+                  onCheckedChange={handleSelectAll}
+                />
               <label htmlFor="select-all" className="text-sm cursor-pointer">
                 전체 선택
               </label>
@@ -342,8 +341,8 @@ export function BookmarkList({
                 <DialogHeader>
                   <DialogTitle>북마크 일괄 삭제</DialogTitle>
                   <DialogDescription>
-                    선택한 {selectedItems.length}개의 북마크를 삭제하시겠습니까?
-                    이 작업은 되돌릴 수 없습니다.
+                    {`선택한 ${selectedItems.length}개의 북마크를 삭제하시겠습니까?
+이 작업은 되돌릴 수 없습니다.`}
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
@@ -375,7 +374,7 @@ export function BookmarkList({
           className
         )}
       >
-        {sortedTours.map((tour) => {
+        {sortedTours.map((tour, index) => {
           const isSelected = selectedItems.includes(tour.contentid);
           return (
             <div key={tour.contentid} className="relative group">
@@ -405,7 +404,7 @@ export function BookmarkList({
                     <DialogHeader>
                       <DialogTitle>북마크 삭제</DialogTitle>
                       <DialogDescription>
-                        "{tour.title}"을 북마크에서 제거하시겠습니까?
+                        {`"${tour.title}"을 북마크에서 제거하시겠습니까?`}
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -431,6 +430,7 @@ export function BookmarkList({
                   "transition-all duration-200",
                   isSelected && "ring-2 ring-primary ring-offset-2"
                 )}
+                priority={index < 6} // 북마크 목록에서도 상위 6개 이미지 우선 로딩
                 // 북마크 페이지에서는 지도 연동을 하지 않으므로 onHover 생략
               />
             </div>
