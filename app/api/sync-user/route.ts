@@ -1,5 +1,11 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import {
+  createAuthErrorResponse,
+  createNotFoundErrorResponse,
+  createServerErrorResponse,
+  createApiSuccessResponse,
+  handleApiError,
+} from "@/lib/api/api-utils";
 import { getServiceRoleClient } from "@/lib/supabase/service-role";
 
 /**
@@ -14,7 +20,7 @@ export async function POST() {
     const { userId } = await auth();
 
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return createAuthErrorResponse();
     }
 
     // Clerk에서 사용자 정보 가져오기
@@ -22,7 +28,7 @@ export async function POST() {
     const clerkUser = await client.users.getUser(userId);
 
     if (!clerkUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return createNotFoundErrorResponse("Clerk 사용자");
     }
 
     // Supabase에 사용자 정보 동기화
@@ -47,22 +53,14 @@ export async function POST() {
       .single();
 
     if (error) {
-      console.error("Supabase sync error:", error);
-      return NextResponse.json(
-        { error: "Failed to sync user", details: error.message },
-        { status: 500 }
-      );
+      throw error;
     }
 
-    return NextResponse.json({
-      success: true,
-      user: data,
-    });
-  } catch (error) {
-    console.error("Sync user error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+    return createApiSuccessResponse(
+      { success: true, user: data },
+      "사용자 정보가 동기화되었습니다."
     );
+  } catch (error) {
+    return handleApiError(error, "사용자 동기화");
   }
 }

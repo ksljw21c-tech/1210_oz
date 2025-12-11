@@ -1,6 +1,14 @@
 import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import {
+  createApiErrorResponse,
+  createAuthErrorResponse,
+  createValidationErrorResponse,
+  createNotFoundErrorResponse,
+  createServerErrorResponse,
+  createApiSuccessResponse,
+  handleApiError,
+} from "@/lib/api/api-utils";
 
 /**
  * @file route.ts
@@ -24,20 +32,14 @@ export async function GET(request: Request) {
     const { userId: clerkUserId } = await auth();
 
     if (!clerkUserId) {
-      return NextResponse.json(
-        { error: "인증이 필요합니다." },
-        { status: 401 }
-      );
+      return createAuthErrorResponse();
     }
 
     const { searchParams } = new URL(request.url);
     const contentId = searchParams.get("contentId");
 
     if (!contentId) {
-      return NextResponse.json(
-        { error: "contentId가 필요합니다." },
-        { status: 400 }
-      );
+      return createValidationErrorResponse("contentId가 필요합니다.", "contentId");
     }
 
     const supabase = await createClient();
@@ -50,10 +52,7 @@ export async function GET(request: Request) {
       .single();
 
     if (userError || !user) {
-      return NextResponse.json(
-        { error: "사용자를 찾을 수 없습니다." },
-        { status: 404 }
-      );
+      return createNotFoundErrorResponse("사용자");
     }
 
     // 북마크 조회
@@ -67,18 +66,14 @@ export async function GET(request: Request) {
     if (bookmarkError) {
       // 데이터가 없으면 null 반환 (에러가 아님)
       if (bookmarkError.code === "PGRST116") {
-        return NextResponse.json({ bookmark: null });
+        return createApiSuccessResponse({ bookmark: null });
       }
       throw bookmarkError;
     }
 
-    return NextResponse.json({ bookmark });
+    return createApiSuccessResponse({ bookmark });
   } catch (error) {
-    console.error("북마크 조회 실패:", error);
-    return NextResponse.json(
-      { error: "북마크 조회 중 오류가 발생했습니다." },
-      { status: 500 }
-    );
+    return handleApiError(error, "북마크 조회");
   }
 }
 
@@ -90,20 +85,14 @@ export async function POST(request: Request) {
     const { userId: clerkUserId } = await auth();
 
     if (!clerkUserId) {
-      return NextResponse.json(
-        { error: "인증이 필요합니다." },
-        { status: 401 }
-      );
+      return createAuthErrorResponse();
     }
 
     const body = await request.json();
     const { contentId } = body;
 
     if (!contentId) {
-      return NextResponse.json(
-        { error: "contentId가 필요합니다." },
-        { status: 400 }
-      );
+      return createValidationErrorResponse("contentId가 필요합니다.", "contentId");
     }
 
     const supabase = await createClient();
@@ -116,10 +105,7 @@ export async function POST(request: Request) {
       .single();
 
     if (userError || !user) {
-      return NextResponse.json(
-        { error: "사용자를 찾을 수 없습니다." },
-        { status: 404 }
-      );
+      return createNotFoundErrorResponse("사용자");
     }
 
     // 북마크 추가
@@ -142,18 +128,14 @@ export async function POST(request: Request) {
           .eq("content_id", contentId)
           .single();
 
-        return NextResponse.json({ bookmark: existing });
+        return createApiSuccessResponse({ bookmark: existing }, "이미 북마크된 항목입니다.");
       }
       throw bookmarkError;
     }
 
-    return NextResponse.json({ bookmark });
+    return createApiSuccessResponse({ bookmark }, "북마크가 추가되었습니다.");
   } catch (error) {
-    console.error("북마크 추가 실패:", error);
-    return NextResponse.json(
-      { error: "북마크 추가 중 오류가 발생했습니다." },
-      { status: 500 }
-    );
+    return handleApiError(error, "북마크 추가");
   }
 }
 
@@ -165,20 +147,14 @@ export async function DELETE(request: Request) {
     const { userId: clerkUserId } = await auth();
 
     if (!clerkUserId) {
-      return NextResponse.json(
-        { error: "인증이 필요합니다." },
-        { status: 401 }
-      );
+      return createAuthErrorResponse();
     }
 
     const { searchParams } = new URL(request.url);
     const contentId = searchParams.get("contentId");
 
     if (!contentId) {
-      return NextResponse.json(
-        { error: "contentId가 필요합니다." },
-        { status: 400 }
-      );
+      return createValidationErrorResponse("contentId가 필요합니다.", "contentId");
     }
 
     const supabase = await createClient();
@@ -191,10 +167,7 @@ export async function DELETE(request: Request) {
       .single();
 
     if (userError || !user) {
-      return NextResponse.json(
-        { error: "사용자를 찾을 수 없습니다." },
-        { status: 404 }
-      );
+      return createNotFoundErrorResponse("사용자");
     }
 
     // 북마크 제거
@@ -208,13 +181,9 @@ export async function DELETE(request: Request) {
       throw deleteError;
     }
 
-    return NextResponse.json({ success: true });
+    return createApiSuccessResponse({ success: true }, "북마크가 제거되었습니다.");
   } catch (error) {
-    console.error("북마크 제거 실패:", error);
-    return NextResponse.json(
-      { error: "북마크 제거 중 오류가 발생했습니다." },
-      { status: 500 }
-    );
+    return handleApiError(error, "북마크 제거");
   }
 }
 
