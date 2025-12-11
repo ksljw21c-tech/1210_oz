@@ -363,3 +363,4 @@ import { getServiceRoleClient } from '@/lib/supabase/service-role';
 
 자세한 내용은 `components/providers/sync-user-provider.tsx`를 참고하세요.
 
+

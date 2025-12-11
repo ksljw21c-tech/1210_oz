@@ -237,7 +237,7 @@ export function TypeChart({
                 verticalAlign="bottom"
                 height={36}
                 formatter={(value, entry) => {
-                  const data = entry.payload as ChartData;
+                  const data = entry.payload as unknown as ChartData;
                   return `${value} (${formatPercentage(data.percentage)})`;
                 }}
                 wrapperStyle={{ fontSize: "12px" }}

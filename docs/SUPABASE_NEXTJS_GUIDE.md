@@ -256,3 +256,4 @@ USING (
 - [Clerk + Supabase 통합 가이드](./CLERK_SUPABASE_INTEGRATION.md)
 - [프로젝트 README](../README.md)
 
+

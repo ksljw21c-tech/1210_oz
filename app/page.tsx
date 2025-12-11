@@ -191,7 +191,7 @@ export default function Home() {
               onRetry={handleRetry}
               onTourSelect={handleTourSelect}
             />
-          </div>
+        </div>
 
           {/* 지도 (우측) */}
           <div className="order-1 lg:order-2 lg:sticky lg:top-32 lg:h-[calc(100vh-8rem)]">

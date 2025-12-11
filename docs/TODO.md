@@ -915,11 +915,39 @@
 
 ## Phase 5: 북마크 페이지 (`/bookmarks`) - 선택 사항
 
-- [ ] Supabase 설정 확인
-  - [ ] `bookmarks` 테이블 확인 (db.sql 참고)
-    - [ ] `users` 테이블과의 관계 확인
-    - [ ] 인덱스 확인 (user_id, content_id, created_at)
-    - [ ] RLS 비활성화 확인 (개발 환경)
+- [x] Supabase 설정 확인
+  - [x] `bookmarks` 테이블 확인 (db.sql 참고)
+    - [x] `users` 테이블과의 관계 확인
+    - [x] 인덱스 확인 (user_id, content_id, created_at)
+    - [x] RLS 비활성화 확인 (개발 환경)
+
+  ---
+  **상세 구현 계획 (plan 모드 build)**
+
+  - [x] Supabase 설정 확인 API 생성
+    - [x] `app/api/verify-supabase/route.ts` 생성
+    - [x] 환경변수 확인 (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    - [x] Supabase 연결 테스트
+    - [x] 테이블 존재 및 구조 확인 (users, bookmarks)
+    - [x] 인덱스 확인 (idx_bookmarks_user_id, idx_bookmarks_content_id, idx_bookmarks_created_at)
+    - [x] RLS 상태 확인 (개발 환경에서는 비활성화)
+    - [x] 권한 확인 (anon, authenticated, service_role)
+    - [x] 외래키 관계 확인 (bookmarks.user_id → users.id)
+    - [x] 검증 결과 JSON 응답 반환
+    - [x] 권장사항 자동 생성
+
+  - [x] 검증 기능 구현
+    - [x] 환경변수 유효성 검증
+    - [x] 데이터베이스 연결 테스트
+    - [x] PostgreSQL 시스템 카탈로그 쿼리
+    - [x] 에러 처리 및 상세 로깅
+    - [x] 브라우저에서 확인 가능한 API 엔드포인트
+
+  - [x] 테스트 및 확인
+    - [x] API Route 정상 작동 확인
+    - [x] GET /api/verify-supabase 요청 테스트
+    - [x] 응답 형식 및 내용 확인
+    - [x] 에러 케이스 테스트 (환경변수 누락 등)
 - [ ] 북마크 목록 페이지
   - [ ] `app/bookmarks/page.tsx` 생성
     - [ ] 인증된 사용자만 접근 가능

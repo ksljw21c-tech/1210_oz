@@ -40,6 +40,8 @@ interface TourListProps {
   onTourHover?: (tour: TourItem) => void;
   /** 관광지 클릭 시 콜백 (지도 연동용) */
   onTourClick?: (tour: TourItem) => void;
+  /** 관광지 선택 시 콜백 */
+  onTourSelect?: (tour: TourItem) => void;
   /** 추가 클래스명 */
   className?: string;
 }
