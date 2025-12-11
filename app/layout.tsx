@@ -17,8 +17,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// 메타데이터 베이스 URL 설정
+const metadataBase = process.env.NEXT_PUBLIC_APP_URL
+  ? new URL(process.env.NEXT_PUBLIC_APP_URL)
+  : new URL("https://yourdomain.com"); // 프로덕션 배포 시 실제 도메인으로 변경 필요
+
 export const metadata: Metadata = {
-  title: "My Trip - 한국 관광지 정보 서비스",
+  metadataBase,
+  title: {
+    default: "My Trip - 한국 관광지 정보 서비스",
+    template: "%s | My Trip",
+  },
   description:
     "전국 관광지 정보를 한눈에! 지역별, 타입별 관광지 검색과 지도에서 위치 확인까지. 한국관광공사 공공 API 기반의 관광지 정보 서비스",
   keywords: [
@@ -29,21 +38,72 @@ export const metadata: Metadata = {
     "지도",
     "검색",
     "반려동물 동반",
+    "한국관광공사",
+    "관광지 검색",
+    "여행 정보",
   ],
   authors: [{ name: "My Trip" }],
+  creator: "My Trip Team",
+  publisher: "My Trip",
+
+  // Open Graph 메타태그
   openGraph: {
     title: "My Trip - 한국 관광지 정보 서비스",
     description:
       "전국 관광지 정보를 한눈에! 지역별, 타입별 관광지 검색과 지도에서 위치 확인까지",
-    type: "website",
+    url: "/",
+    siteName: "My Trip",
+    images: [
+      {
+        url: "/og-image.png", // public 폴더에 og-image.png 추가 필요
+        width: 1200,
+        height: 630,
+        alt: "My Trip - 한국 관광지 정보 서비스",
+      },
+    ],
     locale: "ko_KR",
+    type: "website",
   },
+
+  // Twitter Card 메타태그
   twitter: {
     card: "summary_large_image",
     title: "My Trip - 한국 관광지 정보 서비스",
     description:
       "전국 관광지 정보를 한눈에! 지역별, 타입별 관광지 검색과 지도에서 위치 확인까지",
+    images: ["/og-image.png"],
+    creator: "@mytrip_kr", // 선택 사항
+    site: "@mytrip_kr", // 선택 사항
   },
+
+  // Robots 메타태그 (SEO 최적화)
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  // Canonical URL 및 언어 대체 링크
+  alternates: {
+    canonical: "/",
+    // 향후 다국어 지원 시 추가
+    // languages: {
+    //   'en-US': '/en-US',
+    //   'ja-JP': '/ja-JP',
+    // },
+  },
+
+  // 기타 메타태그
+  category: "Travel & Tourism",
+  classification: "Tourism Information Service",
 };
 
 /**
