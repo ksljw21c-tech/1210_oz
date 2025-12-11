@@ -7,6 +7,7 @@ import { getDetailCommon } from "@/lib/api/tour-api";
 import { createClient } from "@/lib/supabase/server";
 import { BookmarkList } from "@/components/bookmarks/bookmark-list";
 import type { TourItem } from "@/lib/types/tour";
+import type { Bookmark } from "@/lib/api/supabase-api";
 
 export const metadata: Metadata = {
   title: "내 북마크 | My Trip",
@@ -28,7 +29,8 @@ export default async function BookmarksPage() {
     redirect("/sign-in");
   }
 
-  let bookmarks: TourItem[] = [];
+  let tours: TourItem[] = [];
+  let bookmarks: Bookmark[] = [];
   let error: Error | null = null;
 
   try {
@@ -49,8 +51,12 @@ export default async function BookmarksPage() {
 
     if (bookmarkRecords.length === 0) {
       // 북마크가 없는 경우 빈 배열 반환
+      tours = [];
       bookmarks = [];
     } else {
+      // 북마크 메타데이터 저장
+      bookmarks = bookmarkRecords;
+
       // 각 북마크의 content_id에 대해 관광지 정보 병렬 조회
       const tourPromises = bookmarkRecords.map(async (bookmark) => {
         try {
@@ -92,7 +98,7 @@ export default async function BookmarksPage() {
       const tourResults = await Promise.allSettled(tourPromises);
 
       // 성공한 결과만 필터링
-      bookmarks = tourResults
+      tours = tourResults
         .filter((result): result is PromiseFulfilledResult<TourItem | null> =>
           result.status === "fulfilled"
         )
@@ -113,7 +119,7 @@ export default async function BookmarksPage() {
             <div>
               <h1 className="text-3xl font-bold">내 북마크</h1>
               <p className="text-sm text-muted-foreground mt-1">
-                북마크한 관광지 목록을 확인하세요 ({bookmarks.length}개)
+                북마크한 관광지 목록을 확인하세요 ({tours.length}개)
               </p>
             </div>
           </div>
@@ -122,7 +128,8 @@ export default async function BookmarksPage() {
 
       <main className="container mx-auto px-4 py-6">
         <BookmarkList
-          tours={bookmarks}
+          tours={tours}
+          bookmarks={bookmarks}
           isLoading={false}
           error={error}
           onRetry={() => {
