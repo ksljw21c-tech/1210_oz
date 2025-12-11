@@ -186,14 +186,15 @@ export function TourFilters({
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-wrap items-center gap-4">
           {/* 지역 필터 */}
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
+          <fieldset className="flex items-center gap-2">
+            <legend className="sr-only">지역 필터</legend>
+            <MapPin className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <Select
               value={areaCode || "all"}
               onValueChange={handleAreaChange}
               disabled={isLoadingAreas}
             >
-              <SelectTrigger className="w-[140px]">
+              <SelectTrigger className="w-[140px]" aria-label="지역 선택">
                 <SelectValue placeholder={isLoadingAreas ? "로딩 중..." : "지역 선택"} />
               </SelectTrigger>
               <SelectContent>
@@ -205,20 +206,25 @@ export function TourFilters({
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </fieldset>
 
           {/* 관광 타입 필터 */}
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <div className="flex flex-wrap items-center gap-2">
+          <fieldset className="flex items-center gap-2">
+            <legend className="sr-only">관광 타입 필터</legend>
+            <Filter className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <div className="flex flex-wrap items-center gap-2" role="group" aria-label="관광 타입 선택">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSelectAllTypes}
                 className="text-xs"
+                aria-label={
+                  selectedContentTypes.length === Object.values(CONTENT_TYPE).length
+                    ? "모든 관광 타입 해제"
+                    : "모든 관광 타입 선택"
+                }
               >
-                {selectedContentTypes.length ===
-                Object.values(CONTENT_TYPE).length
+                {selectedContentTypes.length === Object.values(CONTENT_TYPE).length
                   ? "전체 해제"
                   : "전체 선택"}
               </Button>
@@ -238,7 +244,7 @@ export function TourFilters({
                 </div>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           {/* 반려동물 동반 필터 */}
           <div className="flex items-center gap-2">
@@ -246,6 +252,7 @@ export function TourFilters({
               id="pet-friendly"
               checked={petFriendly}
               onCheckedChange={handlePetFriendlyChange}
+              aria-label={petFriendly ? "반려동물 동반 가능 필터 활성화됨" : "반려동물 동반 가능 필터 비활성화됨"}
             />
             <Label htmlFor="pet-friendly" className="cursor-pointer text-sm">
               반려동물 동반 가능
@@ -258,7 +265,7 @@ export function TourFilters({
               value={arrange || ARRANGE.MODIFIED}
               onValueChange={handleArrangeChange}
             >
-              <SelectTrigger className="w-[120px]">
+              <SelectTrigger className="w-[120px]" aria-label="관광지 정렬 방식 선택">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -279,8 +286,9 @@ export function TourFilters({
               size="sm"
               onClick={handleReset}
               className="gap-1"
+              aria-label="모든 필터 초기화"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
               초기화
             </Button>
           )}

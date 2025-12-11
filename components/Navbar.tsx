@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { MapPin, BarChart3, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +53,7 @@ const Navbar = () => {
         </Link>
 
         {/* 네비게이션 링크 */}
-        <nav className="flex gap-2 items-center">
+        <nav aria-label="메인 네비게이션" className="flex gap-2 items-center">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = pathname === link.href;
@@ -61,8 +62,10 @@ const Navbar = () => {
                 <Button
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn("gap-2", isActive && "bg-secondary")}
+                  aria-current={isActive ? "page" : undefined}
+                  aria-label={`${link.label} 페이지${isActive ? " (현재 페이지)" : ""}`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4" aria-hidden="true" />
                   <span className="hidden sm:inline">{link.label}</span>
                 </Button>
               </Link>
@@ -70,8 +73,9 @@ const Navbar = () => {
           })}
         </nav>
 
-        {/* 로그인/사용자 버튼 */}
+        {/* 테마 토글 및 로그인/사용자 버튼 */}
         <div className="flex gap-4 items-center">
+          <ThemeToggle />
           <SignedOut>
             <SignInButton mode="modal">
               <Button>로그인</Button>

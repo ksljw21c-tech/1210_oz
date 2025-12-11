@@ -1166,20 +1166,39 @@
 
 ## 추가 작업 (선택 사항)
 
-- [ ] 다크 모드 지원
-  - [ ] 테마 전환 기능
-  - [ ] 모든 컴포넌트 다크 모드 스타일 적용
+- [x] 다크 모드 지원
+  - [x] 테마 전환 기능
+    - [x] `next-themes` 패키지 설치 및 설정
+    - [x] `ThemeProvider` 생성 및 레이아웃에 적용
+    - [x] `ThemeToggle` 컴포넌트 생성 및 Navbar에 추가
+    - [x] 시스템 테마 감지 및 로컬 스토리지 저장
+  - [x] 모든 컴포넌트 다크 모드 스타일 적용
+    - [x] 기존 CSS 변수 활용 (`.dark` 클래스)
+    - [x] shadcn/ui 컴포넌트 자동 지원 확인
 - [ ] PWA 지원
   - [ ] `app/manifest.ts` 생성
   - [ ] Service Worker 설정
   - [ ] 오프라인 지원
-- [ ] 접근성 개선
-  - [ ] ARIA 라벨 추가
-  - [ ] 키보드 네비게이션 개선
+- [x] 접근성 개선
+  - [x] ARIA 라벨 추가
+    - [x] 네비게이션에 `aria-label="메인 네비게이션"` 추가
+    - [x] 현재 페이지 링크에 `aria-current="page"` 추가
+    - [x] 필터 섹션에 `fieldset`과 `legend` 사용
+    - [x] 모든 인터랙티브 요소에 의미 있는 `aria-label` 추가
+  - [x] 키보드 네비게이션 개선
+    - [x] Skip to content 링크 추가 (`#main-content`)
+    - [x] 포커스 스타일 개선 (`.focus-visible` 클래스)
+    - [x] `sr-only` 클래스 추가 (스크린 리더 전용 텍스트)
+    - [x] 메인 콘텐츠 영역에 `role="main"` 추가
   - [ ] 색상 대비 확인 (WCAG AA)
-- [ ] 성능 모니터링
-  - [ ] Web Vitals 측정
+    - [ ] 색상 대비 비율 측정 도구 사용 (선택 사항)
+- [x] 성능 모니터링
+  - [x] Web Vitals 측정
+    - [x] Next.js 15 자동 Web Vitals 수집 활용
+    - [x] `lib/analytics.ts` 생성 (확장 가능성)
+    - [x] Vercel Analytics 자동 수집
   - [ ] 에러 로깅 (Sentry 등)
+    - [ ] Sentry 설정 (선택 사항)
 - [ ] 사용자 피드백
   - [ ] 피드백 수집 기능
   - [ ] 버그 리포트 기능
